@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+@theme {
+  /* === Brand Colors === */
+  --color-brand-green-deep: #004C1B;
+  --color-brand-green-navy: #00330F;
+  --color-brand-gold: #EB9B14;
+  --color-brand-sand: #F7F4EC;
+  --color-brand-graphite: #16241C;
+
+  /* === Typography === */
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  /* === Animations === */
+  --animate-pulse-idle: pulse-idle 4s ease-in-out infinite;
+  --animate-signal-ring: signal-ring 1.5s ease-out forwards;
+
+  @keyframes pulse-idle {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.03); opacity: 0.85; }
+  }
+
+  @keyframes signal-ring {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+}
+
+/* === Global base styles === */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-brand-sand);
+  color: var(--color-brand-graphite);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === Signal mark draw animation === */
+@keyframes draw-signal {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.animate-draw-signal {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-signal 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* === Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* === iOS safe area for WhatsApp button === */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
