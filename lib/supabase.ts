@@ -15,17 +15,19 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 let _supabase: SupabaseClient | null = null
 
-function getSupabase(): SupabaseClient {
+function getSupabase(): SupabaseClient | null {
   if (_supabase) return _supabase
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error(
+    console.warn(
       '[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY. ' +
+      'Supabase features will be disabled. ' +
       'Add them to .env.local or your Vercel environment variables.'
     )
+    return null
   }
 
   _supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -42,6 +44,11 @@ export interface CoverageLead {
 export async function saveCoverageLead(lead: CoverageLead) {
   try {
     const supabase = getSupabase()
+    if (!supabase) {
+      console.warn('[Supabase] Client not available — skipping lead save.')
+      return null
+    }
+
     const { data, error } = await supabase
       .from('coverage_leads')
       .insert([lead])
